@@ -29,6 +29,7 @@ This application is a simple Java web service designed to simulate money transfe
 ### Step 1: Clone the Repository
 
 git clone git@github.com:moshTech/dot-coding-test.git
+
 cd dot-coding-test
 
 ### Step 2: Build the Application
