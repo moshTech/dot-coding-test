@@ -1,8 +1,11 @@
 package com.mosh.dot_assessment_test.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author mosh
@@ -31,6 +34,34 @@ public class DateConverterUtil {
             }
         }
         return date;
+    }
+
+    public static LocalDateTime parseDateTime(String dateTimeString) {
+        List<DateTimeFormatter> formatters = Arrays.asList(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"),
+                DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss"),
+                DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd"),
+                DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        );
+
+        for (DateTimeFormatter formatter : formatters) {
+            System.out.println(formatter.toString());
+            try {
+                // Handle formats with only date
+                if (formatter.toString().contains("yyyy-MM-dd") || formatter.toString().contains("dd-MM-yyyy")) {
+                    LocalDate localDate = LocalDate.parse(dateTimeString, formatter);
+                    return localDate.atStartOfDay();
+                } else {
+                    return LocalDateTime.parse(dateTimeString, formatter);
+                }
+            } catch (DateTimeParseException e) {
+                // Continue to the next formatter
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid date-time format: " + dateTimeString);
     }
 
 }

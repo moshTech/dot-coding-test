@@ -20,15 +20,19 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    @Query("SELECT t FROM Transaction t WHERE " +
-            "(:status IS NULL OR t.status = :status) AND " +
-            "(:sourceAccountNumber IS NULL OR t.sourceAccountNumber = :sourceAccountNumber) AND " +
-            "(:startDate IS NULL OR :endDate IS NULL OR t.dateCreated BETWEEN :startDate AND :endDate)")
+    @Query(value= "SELECT * FROM transactions WHERE " +
+            "(:status IS NULL OR status = :status) AND " +
+            "(:sourceAccountNumber IS NULL OR source_account_number = :sourceAccountNumber) AND " +
+            "(:beneficiaryAccountNumber IS NULL OR beneficiary_account_number = :beneficiaryAccountNumber) AND " +
+            "(:startDate IS NULL OR :endDate IS NULL OR date_created BETWEEN :startDate AND :endDate)",
+            nativeQuery = true)
     Page<Transaction> findByStatusAndOrSourceAccountNumberAndOrDateCreatedBetween(
-            @Param("status") Status status,
+            @Param("status") String status,
             @Param("sourceAccountNumber") String sourceAccountNumber,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate, Pageable pageable);
+            @Param("beneficiaryAccountNumber") String beneficiaryAccountNumber,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate,
+            Pageable pageable);
 
     List<Transaction> findByDateCreatedBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

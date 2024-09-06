@@ -72,6 +72,9 @@ public class TransactionService {
             transaction.setStatus(Status.SUCCESSFUL);
             transaction.setStatusMessage("Transfer completed successfully");
         }catch(CustomRuntimeException e) {
+            transaction.setStatus(Status.FAILED);
+            transaction.setStatusMessage("Error processing transfer: " + e.getErrors().get(0).getMessage());
+            transactionRepository.save(transaction);
             throw e;
         }catch
          (Exception e) {
@@ -86,8 +89,8 @@ public class TransactionService {
        return  accountBalance >= amount;
     }
 
-    public Page<Transaction> getTransactions(Status status, String accountNumber, LocalDateTime startDate, LocalDateTime endDate, int page, int pageSize) {
-        return transactionRepository.findByStatusAndOrSourceAccountNumberAndOrDateCreatedBetween(status, accountNumber, startDate, endDate,  PageRequest.of(page,pageSize));
+    public Page<Transaction> getTransactions(String status, String sourceAccountNumber,  String beneficiaryAccountNumber, String startDate, String endDate, int page, int pageSize) {
+        return transactionRepository.findByStatusAndOrSourceAccountNumberAndOrDateCreatedBetween(status, sourceAccountNumber, beneficiaryAccountNumber,startDate, endDate,  PageRequest.of(page,pageSize));
     }
 
     public void analyzeTransactionsForCommission() {
